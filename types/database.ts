@@ -54,27 +54,36 @@ export interface Database {
         Row: Profile;
         Insert: Partial<Profile> & { id: string };
         Update: Partial<Profile>;
+        Relationships: [];
       };
       worker_profiles: {
         Row: WorkerProfile;
         Insert: Partial<WorkerProfile> & { id: string };
         Update: Partial<WorkerProfile>;
+        Relationships: [];
       };
       groups: {
         Row: Group;
         Insert: Partial<Group> & { name: string; owner_id: string };
         Update: Partial<Group>;
+        Relationships: [];
       };
       group_members: {
         Row: GroupMember;
         Insert: GroupMember;
         Update: Partial<GroupMember>;
+        Relationships: [];
       };
       messages: {
         Row: Message;
         Insert: Partial<Message> & { group_id: string; sender_id: string; content: string };
         Update: Partial<Message>;
+        Relationships: [];
       };
     };
+    Views: Record<string, never>;
+    Functions: Record<string, never>;
+    Enums: Record<string, never>;
+    CompositeTypes: Record<string, never>;
   };
 }
