@@ -142,7 +142,7 @@ export default function WorkerRegisterForm() {
         </span>
         <h2 className="mt-4 text-xl font-bold">Application Submitted</h2>
         <p className="mt-2 text-sm text-muted">
-          Thanks, {values.fullName.split(' ')[0] || 'there'}! We've received your worker registration.
+          Thanks, {values.fullName.split(' ')[0] || 'there'}! We&apos;ve received your worker registration.
           Check your email to confirm your account, then log in to track your status.
         </p>
         <Button className="mt-6 w-full" onClick={() => router.push('/auth/login')}>

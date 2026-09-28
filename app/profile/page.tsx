@@ -101,7 +101,7 @@ export default function ProfilePage() {
                 </div>
               ) : (
                 <p className="mt-4 text-sm text-muted">
-                  You haven't registered as a worker yet.
+                  You haven&apos;t registered as a worker yet.
                 </p>
               )}
             </Card>

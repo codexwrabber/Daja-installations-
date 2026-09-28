@@ -41,7 +41,7 @@ export default function ContactPage() {
 
         <Card>
           {submitted ? (
-            <p className="text-sm">Thanks for reaching out — we'll be in touch soon.</p>
+            <p className="text-sm">Thanks for reaching out — we&apos;ll be in touch soon.</p>
           ) : (
             <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
               <Input label="Full Name" required placeholder="Your full name" />

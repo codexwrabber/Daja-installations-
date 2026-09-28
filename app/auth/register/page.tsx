@@ -55,7 +55,7 @@ export default function RegisterPage() {
       <AuthPanel active="register">
         <h1 className="text-xl font-bold">Check your email</h1>
         <p className="mt-2 text-sm text-muted">
-          We've sent a confirmation link to {values.email}. Confirm your email to finish setting up your account.
+          We&apos;ve sent a confirmation link to {values.email}. Confirm your email to finish setting up your account.
         </p>
         <Link href="/auth/login" className="mt-6 inline-block text-sm font-semibold text-brand-500">
           Back to login
