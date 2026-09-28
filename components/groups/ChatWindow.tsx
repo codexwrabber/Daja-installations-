@@ -34,13 +34,20 @@ export default function ChatWindow({ groupId, groupName }: ChatWindowProps) {
       // both the initial load and any realtime inserts can resolve names.
       const { data: memberRows } = await supabase
         .from('group_members')
-        .select('user_id, profiles!group_members_user_id_fkey(full_name)')
+        .select('user_id')
         .eq('group_id', groupId);
 
+      const memberIds = (memberRows ?? []).map((row) => row.user_id);
       const nameMap = new Map<string, string>();
-      (memberRows ?? []).forEach((row: any) => {
-        nameMap.set(row.user_id, row.profiles?.full_name ?? 'Member');
-      });
+      if (memberIds.length > 0) {
+        const { data: profileRows } = await supabase
+          .from('profiles')
+          .select('id, full_name')
+          .in('id', memberIds);
+        (profileRows ?? []).forEach((p) => {
+          nameMap.set(p.id, p.full_name ?? 'Member');
+        });
+      }
       namesRef.current = nameMap;
 
       const { data } = await supabase

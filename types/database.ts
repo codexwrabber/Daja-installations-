@@ -1,17 +1,21 @@
+// NOTE: Row/Insert/Update shapes MUST be `type` aliases (not `interface`).
+// supabase-js requires them to satisfy Record<string, unknown>, which
+// interfaces do not; using interfaces collapses every query type to `never`.
+
 export type RegistrationStatus = 'pending' | 'submitted' | 'approved' | 'rejected';
 export type PaymentStatus = 'unpaid' | 'pending_review' | 'paid';
 export type GroupRole = 'owner' | 'admin' | 'member';
 
-export interface Profile {
+export type Profile = {
   id: string;
   full_name: string | null;
   username: string | null;
   avatar_url: string | null;
   phone: string | null;
   created_at: string;
-}
+};
 
-export interface WorkerProfile {
+export type WorkerProfile = {
   id: string;
   skills: string[] | null;
   experience: string | null;
@@ -21,33 +25,36 @@ export interface WorkerProfile {
   registration_status: RegistrationStatus;
   payment_status: PaymentStatus;
   submitted_at: string | null;
-}
+};
 
-export interface Group {
+export type Group = {
   id: string;
   name: string;
   description: string | null;
   avatar_url: string | null;
   owner_id: string;
   created_at: string;
-}
+};
 
-export interface GroupMember {
+export type GroupMember = {
   group_id: string;
   user_id: string;
   role: GroupRole;
   joined_at: string;
-}
+};
 
-export interface Message {
+export type Message = {
   id: string;
   group_id: string;
   sender_id: string;
   content: string;
   created_at: string;
-}
+};
 
-export interface Database {
+export type Database = {
+  __InternalSupabase: {
+    PostgrestVersion: '12';
+  };
   public: {
     Tables: {
       profiles: {
@@ -70,7 +77,7 @@ export interface Database {
       };
       group_members: {
         Row: GroupMember;
-        Insert: GroupMember;
+        Insert: Partial<GroupMember> & { group_id: string; user_id: string };
         Update: Partial<GroupMember>;
         Relationships: [];
       };
@@ -81,9 +88,9 @@ export interface Database {
         Relationships: [];
       };
     };
-    Views: Record<string, never>;
-    Functions: Record<string, never>;
-    Enums: Record<string, never>;
-    CompositeTypes: Record<string, never>;
+    Views: { [_ in never]: never };
+    Functions: { [_ in never]: never };
+    Enums: { [_ in never]: never };
+    CompositeTypes: { [_ in never]: never };
   };
-}
+};
