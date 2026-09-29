@@ -33,9 +33,10 @@ export default function ContactPage() {
           </p>
 
           <div className="mt-8 flex flex-col gap-4 text-sm">
-            <span className="flex items-center gap-3"><Mail className="h-4 w-4 text-brand-500" /> hello@daja.services</span>
-            <span className="flex items-center gap-3"><Phone className="h-4 w-4 text-brand-500" /> +234 800 000 0000</span>
-            <span className="flex items-center gap-3"><MapPin className="h-4 w-4 text-brand-500" /> Lekki Phase 1, Lagos</span>
+            <span className="flex items-center gap-3"><Mail className="h-4 w-4 text-brand-500" /> Joshuaesan05@gmail.com</span>
+            <span className="flex items-center gap-3"><Phone className="h-4 w-4 text-brand-500" /> 0704 788 1457</span>
+            <span className="flex items-center gap-3"><Phone className="h-4 w-4 text-brand-500" /> 08101425206</span>
+            <span className="flex items-center gap-3"><MapPin className="h-4 w-4 text-brand-500" /> No. 19 Pipeline Road, Eleme, Port Harcourt 500001, Rivers</span>
           </div>
         </div>
 

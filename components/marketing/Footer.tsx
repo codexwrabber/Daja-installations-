@@ -38,9 +38,10 @@ export default function Footer() {
         <div>
           <h4 className="text-sm font-semibold">Contact</h4>
           <div className="mt-3 flex flex-col gap-2 text-sm text-muted">
-            <span className="flex items-center gap-2"><Mail className="h-4 w-4" /> hello@daja.services</span>
-            <span className="flex items-center gap-2"><Phone className="h-4 w-4" /> +234 800 000 0000</span>
-            <span className="flex items-center gap-2"><MapPin className="h-4 w-4" /> Lekki Phase 1, Lagos</span>
+            <span className="flex items-center gap-2"><Mail className="h-4 w-4" /> Joshuaesan05@gmail.com</span>
+            <span className="flex items-center gap-2"><Phone className="h-4 w-4" /> 0704 788 1457</span>
+            <span className="flex items-center gap-2"><Phone className="h-4 w-4" /> 08101425206</span>
+            <span className="flex items-center gap-2"><MapPin className="h-4 w-4" /> No. 19 Pipeline Road, Eleme, Port Harcourt 500001, Rivers</span>
           </div>
         </div>
       </div>
