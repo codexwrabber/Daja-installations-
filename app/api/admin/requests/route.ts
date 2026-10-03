@@ -8,42 +8,70 @@ function isAuthorized(req: NextRequest): boolean {
 }
 
 export async function GET(req: NextRequest) {
-  if (!isAuthorized(req)) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  try {
+    if (!isAuthorized(req)) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    if (!process.env.SUPABASE_SERVICE_ROLE_KEY || !process.env.NEXT_PUBLIC_SUPABASE_URL) {
+      return NextResponse.json(
+        { error: 'Server is missing SUPABASE_SERVICE_ROLE_KEY or NEXT_PUBLIC_SUPABASE_URL.' },
+        { status: 500 }
+      );
+    }
+
+    const supabase = createAdminClient();
+    const { data, error } = await supabase
+      .from('contact_messages')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    return NextResponse.json({ requests: data });
+  } catch (err) {
+    return NextResponse.json(
+      { error: err instanceof Error ? err.message : 'Unknown server error' },
+      { status: 500 }
+    );
   }
-
-  const supabase = createAdminClient();
-  const { data, error } = await supabase
-    .from('contact_messages')
-    .select('*')
-    .order('created_at', { ascending: false });
-
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
-
-  return NextResponse.json({ requests: data });
 }
 
 export async function PATCH(req: NextRequest) {
-  if (!isAuthorized(req)) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  try {
+    if (!isAuthorized(req)) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    if (!process.env.SUPABASE_SERVICE_ROLE_KEY || !process.env.NEXT_PUBLIC_SUPABASE_URL) {
+      return NextResponse.json(
+        { error: 'Server is missing SUPABASE_SERVICE_ROLE_KEY or NEXT_PUBLIC_SUPABASE_URL.' },
+        { status: 500 }
+      );
+    }
+
+    const body = await req.json().catch(() => null);
+    const id = body?.id as string | undefined;
+    const status = body?.status as string | undefined;
+
+    if (!id || !status || !['new', 'contacted', 'closed'].includes(status)) {
+      return NextResponse.json({ error: 'Invalid request' }, { status: 400 });
+    }
+
+    const supabase = createAdminClient();
+    const { error } = await supabase.from('contact_messages').update({ status }).eq('id', id);
+
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    return NextResponse.json({ ok: true });
+  } catch (err) {
+    return NextResponse.json(
+      { error: err instanceof Error ? err.message : 'Unknown server error' },
+      { status: 500 }
+    );
   }
-
-  const body = await req.json().catch(() => null);
-  const id = body?.id as string | undefined;
-  const status = body?.status as string | undefined;
-
-  if (!id || !status || !['new', 'contacted', 'closed'].includes(status)) {
-    return NextResponse.json({ error: 'Invalid request' }, { status: 400 });
-  }
-
-  const supabase = createAdminClient();
-  const { error } = await supabase.from('contact_messages').update({ status }).eq('id', id);
-
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
-
-  return NextResponse.json({ ok: true });
 }
