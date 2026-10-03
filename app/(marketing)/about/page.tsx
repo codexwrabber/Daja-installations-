@@ -24,7 +24,7 @@ export default function AboutPage() {
         </p>
         <p className="mt-4 text-sm leading-relaxed text-muted">
           Daja Installation Services connects homes and businesses with verified, skilled workers for
-          electrical, CCTV, air conditioning and general installation needs. We also support our workforce
+          electrical, CCTV, solar and inverter installation and general installation needs. We also support our workforce
           with training, community and real job opportunities so they can grow their careers.
         </p>
 
