@@ -6,7 +6,7 @@ import { Zap, Video, Wind, Wrench } from 'lucide-react';
 const services = [
   { icon: Zap, title: 'Electrical Installation', desc: 'Wiring, fittings, panel upgrades and safety inspections for homes and businesses.' },
   { icon: Video, title: 'CCTV Installation', desc: 'Camera setup, monitoring configuration and ongoing maintenance for your property.' },
-  { icon: Wind, title: 'Solar And Inverter Installation', desc: 'Installation, installation and repair of inverter units.' },
+  { icon: Wind, title: 'Solar And Inverter Installation', desc: 'Installation and repair of inverter systems.' },
   { icon: Wrench, title: 'General Installations', desc: 'Plumbing, construction support and other installation services on request.' },
 ];
 
