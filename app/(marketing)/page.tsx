@@ -8,7 +8,7 @@ import Link from 'next/link';
 const services = [
   { icon: Zap, title: 'Electrical Installation', desc: 'Safe and efficient electrical solutions.' },
   { icon: Video, title: 'CCTV Installation', desc: 'Keep your property secure.' },
-  { icon: Wind, title: 'Air Conditioning', desc: 'Stay cool all year round.' },
+  { icon: Wind, title: 'Solar And Inverter Installation', desc: 'Stay Lights on all year round.' },
   { icon: Wrench, title: 'General Installations', desc: 'Home, office & business solutions.' },
 ];
 
