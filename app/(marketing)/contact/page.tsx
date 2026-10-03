@@ -7,19 +7,35 @@ import Card from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
 import { Mail, Phone, MapPin } from 'lucide-react';
+import { createClient } from '@/lib/supabase/client';
 
 export default function ContactPage() {
+  const [values, setValues] = useState({ fullName: '', email: '', phone: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setError(null);
     setLoading(true);
-    // MVP: no backend endpoint yet — replace with a Supabase table or email service later.
-    setTimeout(() => {
-      setLoading(false);
-      setSubmitted(true);
-    }, 600);
+
+    const supabase = createClient();
+    const { error: insertError } = await supabase.from('contact_messages').insert({
+      full_name: values.fullName.trim(),
+      email: values.email.trim(),
+      phone: values.phone.trim() || null,
+      message: values.message.trim(),
+    });
+
+    setLoading(false);
+
+    if (insertError) {
+      setError("Couldn't send your message. Please try again, or call us directly.");
+      return;
+    }
+
+    setSubmitted(true);
   }
 
   return (
@@ -29,7 +45,8 @@ export default function ContactPage() {
         <div>
           <h1 className="text-3xl font-extrabold">Contact Us</h1>
           <p className="mt-2 text-sm text-muted">
-            Have a question or need a service? Reach out and our team will get back to you shortly.
+            Need an electrician or have a question? Send us a service request and our team will reach
+            out to you directly.
           </p>
 
           <div className="mt-8 flex flex-col gap-4 text-sm">
@@ -42,17 +59,44 @@ export default function ContactPage() {
 
         <Card>
           {submitted ? (
-            <p className="text-sm">Thanks for reaching out — we&apos;ll be in touch soon.</p>
+            <p className="text-sm">
+              Thanks for reaching out — we&apos;ve received your request and an electrician will contact
+              you shortly.
+            </p>
           ) : (
-            <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-              <Input label="Full Name" required placeholder="Your full name" />
-              <Input label="Email Address" type="email" required placeholder="you@example.com" />
+            <form className="flex flex-col gap-4" onSubmit={handleSubmit} noValidate>
+              {error && (
+                <p className="rounded-lg bg-red-500/10 px-3 py-2 text-sm text-red-500">{error}</p>
+              )}
+              <Input
+                label="Full Name"
+                required
+                placeholder="Your full name"
+                value={values.fullName}
+                onChange={(e) => setValues((v) => ({ ...v, fullName: e.target.value }))}
+              />
+              <Input
+                label="Email Address"
+                type="email"
+                required
+                placeholder="you@example.com"
+                value={values.email}
+                onChange={(e) => setValues((v) => ({ ...v, email: e.target.value }))}
+              />
+              <Input
+                label="Phone Number"
+                placeholder="So an electrician can call you back"
+                value={values.phone}
+                onChange={(e) => setValues((v) => ({ ...v, phone: e.target.value }))}
+              />
               <div className="flex flex-col gap-1.5">
                 <label className="text-sm font-medium">Message <span className="text-red-500">*</span></label>
                 <textarea
                   required
                   rows={4}
-                  placeholder="How can we help?"
+                  placeholder="What do you need help with?"
+                  value={values.message}
+                  onChange={(e) => setValues((v) => ({ ...v, message: e.target.value }))}
                   className="rounded-xl border border-[var(--border)] bg-[var(--card)] px-3.5 py-2.5 text-sm outline-none focus:ring-2 focus:ring-brand-500/60"
                 />
               </div>

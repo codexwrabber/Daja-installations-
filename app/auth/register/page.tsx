@@ -47,6 +47,17 @@ export default function RegisterPage() {
     }
 
     setLoading(false);
+
+    // With email confirmation disabled in Supabase, signUp returns an active
+    // session immediately and we can send the person straight in. If
+    // confirmation is ever turned back on, data.session will be null and we
+    // fall back to the "check your email" message instead.
+    if (data.session) {
+      router.push('/groups');
+      router.refresh();
+      return;
+    }
+
     setSuccess(true);
   }
 

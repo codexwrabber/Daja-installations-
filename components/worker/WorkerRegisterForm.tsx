@@ -19,6 +19,7 @@ const steps = [
 interface FormValues {
   fullName: string;
   email: string;
+  password: string;
   phone: string;
   countryCode: string;
   dateOfBirth: string;
@@ -31,6 +32,7 @@ interface FormValues {
 const initialValues: FormValues = {
   fullName: '',
   email: '',
+  password: '',
   phone: '',
   countryCode: '+234',
   dateOfBirth: '',
@@ -57,11 +59,14 @@ export default function WorkerRegisterForm() {
   function goNext() {
     if (step === 1) {
       const stepErrors = validateWorkerForm(values);
-      const relevant = ['fullName', 'email', 'phone', 'dateOfBirth', 'gender', 'location'];
+      const relevant = ['fullName', 'email', 'password', 'phone', 'dateOfBirth', 'gender', 'location'];
       const filtered: FieldErrors = {};
       relevant.forEach((k) => {
         if (stepErrors[k]) filtered[k] = stepErrors[k];
       });
+      if (!values.password || values.password.trim().length < 6) {
+        filtered.password = 'Password must be at least 6 characters';
+      }
       setErrors(filtered);
       if (Object.keys(filtered).length > 0) return;
     }
@@ -88,13 +93,24 @@ export default function WorkerRegisterForm() {
     try {
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: values.email.trim(),
-        password: crypto.randomUUID().slice(0, 12),
+        password: values.password,
         options: { data: { full_name: values.fullName.trim() } },
       });
       if (authError) throw authError;
 
       const userId = authData.user?.id;
       if (!userId) throw new Error('Could not create your account. Please try again.');
+
+      // RLS requires an authenticated session to write profiles/worker_profiles.
+      // With email confirmation disabled in Supabase, signUp() returns a
+      // session immediately. If confirmation is ever re-enabled, there is no
+      // session yet and the inserts below would be silently rejected — so we
+      // stop here with a clear message instead of leaving a half-created account.
+      if (!authData.session) {
+        throw new Error(
+          'Your account was created but needs email confirmation before we can finish your registration. Please confirm your email, then log in and complete your worker profile from the Profile page.'
+        );
+      }
 
       await supabase.from('profiles').upsert({
         id: userId,
@@ -142,11 +158,11 @@ export default function WorkerRegisterForm() {
         </span>
         <h2 className="mt-4 text-xl font-bold">Application Submitted</h2>
         <p className="mt-2 text-sm text-muted">
-          Thanks, {values.fullName.split(' ')[0] || 'there'}! We&apos;ve received your worker registration.
-          Check your email to confirm your account, then log in to track your status.
+          Thanks, {values.fullName.split(' ')[0] || 'there'}! We&apos;ve received your worker registration
+          and your account is ready to go.
         </p>
-        <Button className="mt-6 w-full" onClick={() => router.push('/auth/login')}>
-          Go to Login
+        <Button className="mt-6 w-full" onClick={() => router.push('/profile')}>
+          Go to My Profile
         </Button>
       </Card>
     );
@@ -203,6 +219,17 @@ export default function WorkerRegisterForm() {
                 value={values.email}
                 onChange={(e) => update('email', e.target.value)}
                 error={errors.email}
+              />
+            </div>
+            <div className="sm:col-span-2">
+              <Input
+                label="Password"
+                type="password"
+                required
+                placeholder="Create a password to log in later"
+                value={values.password}
+                onChange={(e) => update('password', e.target.value)}
+                error={errors.password}
               />
             </div>
             <Input

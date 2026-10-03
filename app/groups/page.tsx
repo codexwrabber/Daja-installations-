@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Search, Plus } from 'lucide-react';
 import AppSidebar from '@/components/marketing/AppSidebar';
 import GroupCard from '@/components/groups/GroupCard';
+import CreateGroupModal from '@/components/groups/CreateGroupModal';
 import Button from '@/components/ui/Button';
 import { createClient } from '@/lib/supabase/client';
 import { useUser } from '@/lib/auth/useUser';
@@ -23,6 +24,7 @@ export default function GroupsPage() {
   const [groups, setGroups] = useState<GroupWithMeta[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -110,7 +112,7 @@ export default function GroupsPage() {
       <main className="flex-1 px-6 py-6 md:px-8">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <h1 className="text-2xl font-bold">Groups</h1>
-          <Button className="gap-1.5">
+          <Button className="gap-1.5" onClick={() => setShowCreateModal(true)} disabled={!user}>
             <Plus className="h-4 w-4" /> Create Group
           </Button>
         </div>
@@ -163,6 +165,17 @@ export default function GroupsPage() {
           </div>
         )}
       </main>
+
+      {showCreateModal && user && (
+        <CreateGroupModal
+          userId={user.id}
+          onClose={() => setShowCreateModal(false)}
+          onCreated={(group) => {
+            setGroups((prev) => [{ ...group, memberCount: 1, joined: true }, ...prev]);
+            setShowCreateModal(false);
+          }}
+        />
+      )}
     </div>
   );
 }
