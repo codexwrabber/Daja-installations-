@@ -27,14 +27,27 @@ export default function AdminPage() {
     setLoading(true);
     setError(null);
 
-    const res = await fetch('/api/admin/requests', {
-      headers: { 'x-admin-code': accessCode },
-    });
+    let res: Response;
+    try {
+      res = await fetch('/api/admin/requests', {
+        headers: { 'x-admin-code': accessCode },
+      });
+    } catch {
+      setLoading(false);
+      setAuthorized(false);
+      setError('Network error — could not reach the server.');
+      return;
+    }
 
     if (!res.ok) {
       setLoading(false);
       setAuthorized(false);
-      setError(res.status === 401 ? 'Incorrect access code.' : 'Could not load requests.');
+      if (res.status === 401) {
+        setError('Incorrect access code.');
+      } else {
+        const body = await res.json().catch(() => null);
+        setError(body?.error ? `Could not load requests: ${body.error}` : 'Could not load requests.');
+      }
       return;
     }
 
